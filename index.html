@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Get Shit Done</title>
+      <style type="text/css">
+        .project { color: green; }
+        .context { color: maroon; }
+        ul { padding: 0; margin: 20px 0 0 0; }
+        li { padding: 5px; margin: 0; list-style: none; border-bottom: 1px solid #eee;}
+        li:hover { background-color: #fcfcfc; }
+        li.done { text-decoration: line-through; color: #999; }
+        input.todoUpdate { width: 100%; }
+        b.doneCount { color: green; }
+        b.topPriorityCount { color: red; }
+      </style>
+    </head>
+    <body>
+
+      <form>
+        <input id="add" size="100" type="text" placeholder="Add a new todo">
+      </form>
+
+      <input type="text" name="search" placeholder="Search">
+
+      Show: <a id="priorityA" href="#A">(A)</a>
+      <a href="#B">(B)</a>
+      <a href="#C">(C)</a>
+      <a href="#D">(D)</a>
+
+      <span id="showing"></span>
+      <span id="stats"></span>
+
+      <ul></ul>
+
+      <script src="todo.js"></script>
+      <script src="app.js"></script>
+    </body>
+  </html>
