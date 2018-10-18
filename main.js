@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
 
 let win;
 
@@ -10,6 +10,7 @@ function createWindow() {
   win.on('closed', () => {
     win = null;
   });
+
 }
 
 app.on('ready', createWindow);

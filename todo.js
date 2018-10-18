@@ -3,33 +3,32 @@ const crypto = require('crypto');
 class TodoList {
 
   constructor() {
-    this.todos = new Set();
-    this.isDone = false;
+    this.todos = [];
   }
 
   add(todo) {
-    this.todos.add(todo);
+    this.todos.push(todo);
   }
 
-  clear() {
-    this.todos.clear();
+  remove(todo) {
+    this.todos.splice(this.todos.indexOf(todo), 1);
+  }
+
+  byId(id) {
+    return this.todos.filter(todo => todo.id === id)[0];
   }
 
   search(what) {
     if (what.match(/^[A-Z]$/)) return this.byPriority(what);
-    return [...this.todos].filter(todo => todo.text.includes(what));
+    return this.todos.filter(todo => todo.text.toLowerCase().includes(what.toLowerCase()));
   }
 
   byPriority(priority) {
-    return [...this.todos].filter(todo => todo.text.startsWith(`(${priority})`));
+    return this.todos.filter(todo => todo.text.startsWith(`(${priority})`));
   }
 
   noPriority() {
-    return [...this.todos].filter(todo => todo.priority === null);
-  }
-
-  byId(id) {
-    return [...this.todos].find(todo => todo.id === id);
+    return this.todos.filter(todo => todo.priority === null);
   }
 
   contexts() {
@@ -41,7 +40,7 @@ class TodoList {
   }
 
   doneCount() {
-    return [...this.todos].filter(todo => todo.isDone).length;
+    return this.todos.filter(todo => todo.isDone).length;
   }
 
   priorityCount(priority) {
@@ -153,6 +152,6 @@ class Todo {
 
 Todo.contextRegex = /(@\w+)+/g;
 Todo.projectRegex = /\B(\+\w+)/g;
-Todo.linkRegex = /(http.*?)(\s|$)/g;
+Todo.linkRegex = /(https?:\/\/.*?)(\s|$)/g;
 
 module.exports = { Todo, TodoList };

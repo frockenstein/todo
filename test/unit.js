@@ -9,7 +9,7 @@ describe('Unit tests', function() {
   it('adds todo items to the list', function() {
     const todo = new Todo('(A) test item');
     this.list.add(todo);
-    assert(this.list.todos.size == 1);
+    assert(this.list.todos.length == 1);
   });
 
   it('handles done todos correctly', function() {
@@ -85,7 +85,7 @@ describe('Unit tests', function() {
   it('searches for todos', function() {
     this.list.add(new Todo('something'));
     this.list.add(new Todo('else'));
-    this.list.add(new Todo('x something done todo'));
+    this.list.add(new Todo('x someTHING done todo'));
     const results = this.list.search('thing');
     assert(results.length == 2);
     assert(results[0].text == 'something');
@@ -131,10 +131,16 @@ describe('Unit tests', function() {
     assert.deepEqual(actual, expected);
   });
 
+  // in progress
   it('processes external links correctly', function() {
     let text = '@something https://confluence.boomtownroi.com:8444/display/GOAT/Bulk+Sprint+8+Retro what';
     const output = text.replace(Todo.linkRegex, '<a class="external" href="$1">$1</a> ');
-    console.log(output);
+    //console.log(output);
+
+    // should do nothing and not get fooled by http/
+    const http = 'something using http/2';
+    const httpOutput = http.replace(Todo.linkRegex, '<$1>');
+    assert(httpOutput === http);
   });
 });
 

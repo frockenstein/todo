@@ -10,30 +10,81 @@
         li { padding: 5px; margin: 0; list-style: none; border-bottom: 1px solid #eee;}
         li:hover { background-color: #fcfcfc; }
         li.done { text-decoration: line-through; color: #999; }
-        input.todoUpdate { width: 100%; }
+        input.add { width: 80%; }
+        input.edit { width: 80%; }
         b.doneCount { color: green; }
         b.topPriorityCount { color: red; }
+        .filters a { margin-right: 5px; }
+        [v-cloak] { display: none; }
       </style>
     </head>
     <body>
+      <script type="text/x-template" id="todo-list">
+        <ul>
+          <todo-item
+            v-for="todo in sortedList(hash)"
+            :key="todo.id"
+            :todo="todo"
+            @remove-todo="removeTodo"></todo-item>
+        </ul>
+      </script>
+      <script type="text/x-template" id="todo-item">
+        <li :class="{ done: todo.isDone }">
 
-      <form>
-        <input id="add" size="100" type="text" placeholder="Add a new todo">
-      </form>
+          <input type="checkbox" :checked="todo.isDone" @change="toggleDone(todo)">
 
-      <input type="text" name="search" placeholder="Search">
+          <input
+            class="edit"
+            type="text"
+            v-if="editing == todo.id"
+            v-model="todo.text"
+            v-todo-focus="editing == todo.id"
+            @keyup.enter="doneEdit(todo)"
+            @keyup.esc="cancelEdit(todo)">
 
-      Show: <a id="priorityA" href="#A">(A)</a>
-      <a href="#B">(B)</a>
-      <a href="#C">(C)</a>
-      <a href="#D">(D)</a>
+          <label v-else @dblclick="editTodo(todo)" v-html="htmlify(todo)"></label>
 
-      <span id="showing"></span>
-      <span id="stats"></span>
+          <button @click="removeTodo(todo)">x</button>
+        </li>
+      </script>
 
-      <ul></ul>
+      <div id="app" v-cloak>
+        <header>
+          <input
+            class="add"
+            type="text"
+            placeholder="add todo"
+            autofocus
+            autocomplete="off"
+            @keyup.enter="addTodo"
+            v-model="newTodo">
 
-      <script src="todo.js"></script>
+          <div>
+            <input
+              placeholder="search"
+              class="search"
+              type="text"
+              v-model.lazy="hash">
+
+            <span>
+              Showing: <a
+                :class="{ project: hash.startsWith('+'), context: hash.startsWith('@') }"
+                :href="'#' + hash">{{hash}}</a>
+            </span>
+
+            <span class="filters" v-once>
+              <a v-for="filter in filters" :href="'#' + filter">{{filter}}</a><a href="#">clear</a>
+            </span>
+
+            <span id="stats">
+              Done: <b class="doneCount"><span v-text="doneCount"></span></b>, Top Priority: <b class="topPriorityCount"><span v-text="topPriorityCount"></span></b>
+            </span>
+          </div>
+        </header>
+        <todo-list :hash="hash" v-bind="$data" @remove-todo="removeTodo"></todo-list>
+      </div>
+
+      <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
       <script src="app.js"></script>
     </body>
   </html>
