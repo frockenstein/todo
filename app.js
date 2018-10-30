@@ -16,8 +16,7 @@ var todoStorage = {
   backupName: 'todo-backup.txt',
 
   load: function() {
-    const file = path.join(this.path, this.filename)
-    return fs.readFileSync(file)
+    return fs.readFileSync(path.join(this.path, this.filename))
       .toString()
       .split('\n')
       .filter(line => line);
@@ -38,7 +37,13 @@ Vue.component('todo-list', {
   template: '#todo-list',
   methods: {
     sortedList: function() {
-      return this.list.search(this.hash);
+      return this.list.search(this.hash).sort((a, b) => {
+        const aText = a.text.toLowerCase();
+        const bText = b.text.toLowerCase();
+        if (aText < bText) return -1;
+        if (aText > bText) return 1;
+        return 0;
+      });
     },
     removeTodo: function(todo) {
       this.$emit('remove-todo', todo);
