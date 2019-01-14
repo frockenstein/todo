@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "mocha test/unit.js"
+    "test": "mocha test/unit.js",
+    "package": "electron-packager . --overwrite"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +14,8 @@
     "electron": "^2.0.8",
     "mocha": "^5.2.0",
     "spectron": "^4.0.0"
+  },
+  "dependencies": {
+    "electron-packager": "^13.0.1"
   }
 }

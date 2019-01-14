@@ -1,8 +1,4 @@
 // https://freecontent.manning.com/examining-update-events-with-computed-properties-in-vue-js/
-/*
-TODO:
-
-*/
 
 const fs = require('fs');
 const path = require('path');
@@ -33,7 +29,7 @@ var todoStorage = {
 };
 
 Vue.component('todo-list', {
-  props: ['hash', 'list', 'hash'],
+  props: ['hash', 'list'],
   template: '#todo-list',
   methods: {
     sortedList: function() {
@@ -166,7 +162,6 @@ function onHashChange () {
 window.addEventListener('hashchange', onHashChange)
 
 window.addEventListener('keyup', (event) => {
-  //console.log([event.target, event.code]);
   if (event.target === document.body && event.code === 'Slash') {
     document.querySelectorAll('input.search')[0].focus();
   }
