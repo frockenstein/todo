@@ -12,6 +12,7 @@
         li.done { text-decoration: line-through; color: #999; filter: blur(1px); opacity: .4; }
         input.add { width: 80%; }
         input.edit { width: 80%; }
+        button.archive { float: right; }
         b.doneCount { color: green; }
         b.topPriorityCount { color: red; }
         .filters a { margin-right: 5px; }
@@ -48,6 +49,7 @@
 
       <div id="app" v-cloak>
         <header>
+          <button class="archive" v-on:click="archive">archive</button>
           <input
             class="add"
             type="text"

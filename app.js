@@ -8,11 +8,12 @@ const { Todo, TodoList } = require('./todo.js');
 var todoStorage = {
 
   path: '/users/frock/dropbox/todo/',
-  filename: 'todo.txt',
+  fileName: 'todo.txt',
+  doneFile: 'done.txt',
   backupName: 'todo-backup.txt',
 
   load: function() {
-    return fs.readFileSync(path.join(this.path, this.filename))
+    return fs.readFileSync(path.join(this.path, this.fileName))
       .toString()
       .split('\n')
       .filter(line => line);
@@ -22,9 +23,16 @@ var todoStorage = {
     if (!todos) throw 'No todos to write!';
     const data = todos.reduce((accumulator, todo) => accumulator + todo.text + '\n', '').trimRight('\n');
     const backup = path.join(this.path, this.backupName);
-    const file = path.join(this.path, this.filename);
+    const file = path.join(this.path, this.fileName);
     fs.copyFileSync(file, backup);
     fs.writeFileSync(file, data);
+  },
+
+  archive: function(todos, callback) {
+    const data = todos.filter(x => x.isDone).reduce((accumulator, todo) => accumulator + todo.text + '\n', '').trimRight('\n');
+    fs.appendFileSync(path.join(this.path, this.doneFile), data);
+    this.write(todos.filter(x => x.isDone === false));
+    callback();
   }
 };
 
@@ -103,11 +111,10 @@ var app = new Vue({
   },
 
   created: function() {
+    // set this so that other components can trigger off it changing
     this.hash = window.location.hash.replace('#', '');
-    const list = new TodoList();
-    todoStorage.load().forEach(line => list.add(new Todo(line)));
-    this.list = list;
-
+    this.load();
+    // anytime the list changes, write to disk
     this.$watch('list.todos', {
       handler: function() {
         console.log('list.todos updated, saving...');
@@ -120,6 +127,11 @@ var app = new Vue({
   },
 
   methods: {
+    load: function() {
+      const list = new TodoList();
+      todoStorage.load().forEach(line => list.add(new Todo(line)));
+      this.list = list;
+    },
     addTodo: function() {
       const value = this.newTodo && this.newTodo.trim();
       if (!value) return;
@@ -138,6 +150,9 @@ var app = new Vue({
     removeTodo: function(todo) {
       console.log(['remove event', todo]);
       this.list.remove(todo);
+    },
+    archive: function() {
+      todoStorage.archive(this.list.todos, this.load);
     }
   },
 
