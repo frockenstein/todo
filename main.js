@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, globalShortcut } = require('electron');
+const { app, BrowserWindow, Menu, MenuItem, globalShortcut } = require('electron');
 
 let win;
 
@@ -18,6 +18,7 @@ function createWindow() {
         { role: 'undo' },
         { role: 'redo' },
         { type: 'separator' },
+        { type: 'normal', label: 'Find', accelerator: 'CmdOrCtrl+F', click: () => { win.webContents.send('find', ''); }},
         { role: 'cut' },
         { role: 'copy' },
         { role: 'paste' },
@@ -84,24 +85,12 @@ function createWindow() {
     ]
   }
 
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  const menu = Menu.buildFromTemplate(template);
 
+  Menu.setApplicationMenu(menu);
 }
 
-app.on('ready', () => {
-
-  createWindow();
-
-   // Register a 'CommandOrControl+X' shortcut listener.
-  const ret = globalShortcut.register('CommandOrControl+F', () => {
-    win.webContents.send('find', '');
-  });
-
-  if (!ret) {
-    console.log('registration failed')
-  }
-});
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -109,10 +98,6 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-});
-
-app.on('will-quit', () => {
-  globalShortcut.unregisterAll();
 });
 
 app.on('activate', () => {
