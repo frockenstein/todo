@@ -1,8 +1,13 @@
 // https://freecontent.manning.com/examining-update-events-with-computed-properties-in-vue-js/
 
+/* TODO:
+* don't sort items until edit is finished
+* clean up control+f code
+*/
+
 const fs = require('fs');
 const path = require('path');
-const { shell } = require('electron');
+const { shell, ipcRenderer } = require('electron');
 const { Todo, TodoList } = require('./todo.js');
 
 var todoStorage = {
@@ -176,8 +181,11 @@ function onHashChange () {
 
 window.addEventListener('hashchange', onHashChange)
 
+// focus the search box for these commands
 window.addEventListener('keyup', (event) => {
   if (event.target === document.body && event.code === 'Slash') {
     document.querySelectorAll('input.search')[0].focus();
   }
 });
+
+ipcRenderer.on('find', () => document.querySelectorAll('input.search')[0].focus());

@@ -89,7 +89,19 @@ function createWindow() {
 
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+
+  createWindow();
+
+   // Register a 'CommandOrControl+X' shortcut listener.
+  const ret = globalShortcut.register('CommandOrControl+F', () => {
+    win.webContents.send('find', '');
+  });
+
+  if (!ret) {
+    console.log('registration failed')
+  }
+});
 
 app.on('window-all-closed', () => {
   // On macOS it is common for applications and their menu bar
@@ -97,6 +109,10 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('will-quit', () => {
+  globalShortcut.unregisterAll();
 });
 
 app.on('activate', () => {
