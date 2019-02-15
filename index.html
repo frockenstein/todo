@@ -38,7 +38,7 @@
             class="edit"
             type="text"
             v-if="editing == todo.id"
-            v-model="todo.text"
+            v-model.lazy="todo.text"
             v-todo-focus="editing == todo.id"
             @keyup.enter="doneEdit(todo)"
             @keyup.esc="cancelEdit(todo)">
