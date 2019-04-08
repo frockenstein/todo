@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { TodoList, Todo } = require('../todo.js');
 
-describe('Unit tests', function() {
+describe('Unit Testes', function() {
   beforeEach(function() {
     this.list = new TodoList();
   });
@@ -134,13 +134,18 @@ describe('Unit tests', function() {
   // in progress
   it('processes external links correctly', function() {
     let text = '@something https://confluence.boomtownroi.com:8444/display/GOAT/Bulk+Sprint+8+Retro what';
-    const output = text.replace(Todo.linkRegex, '<a class="external" href="$1">$1</a> ');
-    //console.log(output);
+    let output = text.replace(Todo.linkRegex, '<a class="external" href="$1">$1</a> ');
 
     // should do nothing and not get fooled by http/
     const http = 'something using http/2';
     const httpOutput = http.replace(Todo.linkRegex, '<$1>');
-    assert(httpOutput === http);
+    assert(httpOutput === http);  
   });
+
+  it('skips contexts when in urls', function() {
+    // shouldn't get tripped up on the @chris.g.chiu part
+    let todo = new Todo("(C) @work read https://medium.com/@chris.g.chiu/ and shit");
+    assert.deepEqual(todo.contexts(), ['@work']);
+  })
 });
 

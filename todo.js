@@ -77,10 +77,10 @@ class TodoList {
     let output = [];
     this.todos.forEach(todo => {
       const items = todo.text.match(regex);
-      if (items.length === 0) return;
+      if (!items || items.length === 0) return;
       for (let item of items) {
         if (output.includes(item)) continue;
-        output.push(item);
+        output.push(item.trim());
       }
     });
     return output;
@@ -150,7 +150,7 @@ class Todo {
   }
 }
 
-Todo.contextRegex = /(@\w+)+/g;
+Todo.contextRegex = /(@\w+)(?=\s|$)/g;
 Todo.projectRegex = /\B(\+\w+)/g;
 Todo.linkRegex = /(https?:\/\/.*?)(\s|$)/g;
 
