@@ -30,6 +30,8 @@ function createWindow() {
     {
       label: 'View',
       submenu: [
+        { type: 'normal', label: 'List', accelerator: 'CmdOrCtrl+1', click: () => { win.webContents.send('list', ''); }},
+        { type: 'normal', label: 'Quad', accelerator: 'CmdOrCtrl+2', click: () => { win.webContents.send('quad', ''); }},
         { role: 'reload' },
         { role: 'forcereload' },
         { role: 'toggledevtools' },

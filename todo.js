@@ -23,6 +23,16 @@ class TodoList {
     return this.todos.filter(todo => todo.text.toLowerCase().includes(what.toLowerCase()));
   }
 
+  sort(list) {
+    return list.sort((a, b) => {
+      const aText = a.text.toLowerCase();
+      const bText = b.text.toLowerCase();
+      if (aText < bText) return -1;
+      if (aText > bText) return 1;
+      return 0;
+    });
+  }
+
   byPriority(priority) {
     return this.todos.filter(todo => todo.text.startsWith(`(${priority})`));
   }

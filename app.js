@@ -1,8 +1,6 @@
 // https://freecontent.manning.com/examining-update-events-with-computed-properties-in-vue-js/
 
 /* TODO:
-* don't sort items until edit is finished
-* clean up control+f code
 */
 
 const fs = require('fs');
@@ -41,18 +39,38 @@ var todoStorage = {
   }
 };
 
+Vue.component('quad', {
+  props: ['list', 'hash'],
+  template: '#quad',
+  data: function() {
+    return {
+      isActive: false,
+      index: 0,
+      quads: [
+        { index: 1, title: 'strategery' },
+        { index: 2, title: 'homer' },
+        { index: 3, title: 'todont' },
+        { index: 4, title: 'housekeeping' }
+      ]
+  }},
+  methods: {
+    byIndex: function(index) {
+      return this.list.sort(this.list.search(`quad:${index}`));
+    },
+    onToggle: function(e) {
+      e.preventDefault();
+      this.isActive = !this.isActive;
+      return false;
+    }
+  }
+});
+
 Vue.component('todo-list', {
   props: ['hash', 'list'],
   template: '#todo-list',
   methods: {
     sortedList: function() {
-      return this.list.search(this.hash).sort((a, b) => {
-        const aText = a.text.toLowerCase();
-        const bText = b.text.toLowerCase();
-        if (aText < bText) return -1;
-        if (aText > bText) return 1;
-        return 0;
-      });
+      return this.list.sort(this.list.search(this.hash));
     },
     removeTodo: function(todo) {
       this.$emit('remove-todo', todo);
@@ -106,13 +124,13 @@ Vue.component('todo-item', {
 
 var app = new Vue({
 
-  el: '#app',
+  el: '#list',
 
   data: {
     filters: ['A', 'B', '@work', '@inbox', '+moto'],
     hash: '',
     newTodo: '',
-    list: null
+    list: null,
   },
 
   created: function() {
@@ -171,6 +189,15 @@ var app = new Vue({
   }
 });
 
+function searchFocus() {
+  document.querySelectorAll('input.search')[0].select();
+}
+
+function render(what) {
+  ['list', 'quad'].forEach(x => document.getElementById(x).style.visibility = 'hidden');
+  document.getElementById(`${what}`).style.visibility = 'visible';
+}
+
 // handle routing
 function onHashChange () {
   app.hash = window.location.hash.replace('#', '');
@@ -184,8 +211,10 @@ window.addEventListener('hashchange', onHashChange)
 // focus the search box for these commands
 window.addEventListener('keyup', (event) => {
   if (event.target === document.body && event.code === 'Slash') {
-    document.querySelectorAll('input.search')[0].focus();
+    searchFocus();
   }
 });
 
-ipcRenderer.on('find', () => document.querySelectorAll('input.search')[0].focus());
+ipcRenderer.on('find', searchFocus);
+ipcRenderer.on('list', () => render('list'));
+ipcRenderer.on('quad', () => render('quad'));
