@@ -4,6 +4,13 @@
       <meta charset="UTF-8">
       <title>Get Shit Done</title>
       <style type="text/css">
+        @import url('https://fonts.googleapis.com/css?family=Signika:300,400,700&display=swap');
+        html { 
+          font-family: signika, sans-serif; 
+          font-weight: 300; 
+          font-size: 95%;
+          color: #333 
+        }
         .project { color: green; }
         .context { color: maroon; }
         ul { padding: 0; margin: 20px 0 0 0; }
@@ -16,11 +23,26 @@
         }
         li:hover { background-color: #fcfcfc; }
         li.done { text-decoration: line-through; color: #999; filter: blur(1px); opacity: .4; }
-        input.add { width: 80%; }
-        input.edit { width: 80%; }
-        button.archive { float: right; }
-        b.doneCount { color: green; }
-        b.topPriorityCount { color: red; }
+        
+        input.add, input.search, input.edit { 
+          border-radius: 2px;
+          border: 1px solid #bbb;
+          padding: 3px 4px;
+          font-size: 80%;
+        }
+        input.add, input.edit { width: 80%; }
+        button.archive { 
+          float: right; 
+          padding: 4px 14px;
+          border-radius: 2px;
+          border: 1px solid #ccc;
+          background-color: #ccc;
+          color: #333;
+          font-size: 90%;
+        }
+        b.doneCount { color: green; font-weight: 400; }
+        b.topPriorityCount { color: red; font-weight: 400; }
+        .search-bar { padding-top: 4px; }
         .filters a { margin-right: 5px; }
         [v-cloak] { display: none; }
 
@@ -39,20 +61,37 @@
           background: #eee;
         }
 
+        .quad-box h3 {
+          font-weight: 400;
+          margin: 0 0 10px 0;
+        }
+
+        .quad-box li {
+          border-bottom: none;
+        }
+
+        .quad-box li:hover {
+          background-color: transparent;
+        }
+
+        .quad-box input.edit {
+          width: 94%;
+        }
+
         .quad-box:nth-child(1) {
-          background: #efe;
+          background: #85b4ca;
         }
 
         .quad-box:nth-child(2) {
-          background: #fdd;
+          background: #c9a0a5;
         }
 
         .quad-box:nth-child(3) {
-          background: #ddd;
+          background: #f1f1d7;
         }
 
         .quad-box:nth-child(4) {
-          background: #ddf;
+          background: #accec0;
         }
       </style>
     </head>
@@ -113,7 +152,7 @@
             @keyup.enter="addTodo"
             v-model="newTodo">
 
-          <div>
+          <div class="search-bar">
             <input
               placeholder="search"
               class="search"
