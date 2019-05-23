@@ -83,7 +83,7 @@ class TodoList {
     return Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
   }
 
-  _getUnique (regex) {
+  _getUnique(regex) {
     let output = [];
     this.todos.forEach(todo => {
       const items = todo.text.match(regex);
@@ -98,6 +98,7 @@ class TodoList {
 }
 
 class Todo {
+  
   constructor(text) {
     if (!text || text === '') throw 'empty todo';
     this.isDone = false;
@@ -114,7 +115,7 @@ class Todo {
 
   _parsePriority() {
 
-    let parts  = this.text.split(' ');
+    let parts = this.text.split(' ');
     let output = [];
     let priority = null;
     let done = false;
