@@ -98,6 +98,7 @@ class TodoList {
 }
 
 class Todo {
+  
   constructor(text) {
     if (!text || text === '') throw 'empty todo';
     this.isDone = false;

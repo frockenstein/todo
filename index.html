@@ -2,18 +2,34 @@
   <html>
     <head>
       <meta charset="UTF-8">
-      <title>Get Shit Done</title>
+      <title>Someday / Maybe / Never</title>
       <style type="text/css">
+        
         @import url('https://fonts.googleapis.com/css?family=Signika:300,400,700&display=swap');
+        
+        :root {
+          --border-radius: 2px;
+        }
+        
         html { 
           font-family: signika, sans-serif; 
           font-weight: 300; 
           font-size: 95%;
-          color: #333 
+          color: #333;
         }
-        .project { color: green; }
-        .context { color: maroon; }
-        ul { padding: 0; margin: 20px 0 0 0; }
+        .project { 
+          color: green; 
+        }
+        
+        .context { 
+          color: maroon; 
+        }
+        
+        ul { 
+          padding: 0; 
+          margin: 20px 0 0 0; 
+        }
+        
         li {
           padding: 5px;
           margin: 0;
@@ -21,29 +37,56 @@
           border-bottom: 1px solid #eee;
           word-wrap: 'break-word';
         }
-        li:hover { background-color: #fcfcfc; }
-        li.done { text-decoration: line-through; color: #999; filter: blur(1px); opacity: .4; }
+        
+        li:hover { 
+          background-color: #fcfcfc; 
+        }
+
+        li.done { 
+          text-decoration: line-through; 
+          color: #999; 
+          filter: blur(1px); 
+          opacity: .4; 
+        }
         
         input.add, input.search, input.edit { 
-          border-radius: 2px;
+          border-radius: var(--border-radius);
           border: 1px solid #bbb;
           padding: 3px 4px;
           font-size: 80%;
         }
-        input.add, input.edit { width: 80%; }
+        
+        input.add, input.edit { 
+          width: 80%; 
+        }
+        
         button.archive { 
           float: right; 
           padding: 4px 14px;
-          border-radius: 2px;
+          border-radius: var(--border-radius);
           border: 1px solid #ccc;
           background-color: #ccc;
           color: #333;
           font-size: 90%;
         }
-        b.doneCount { color: green; font-weight: 400; }
-        b.topPriorityCount { color: red; font-weight: 400; }
-        .search-bar { padding-top: 4px; }
-        .filters a { margin-right: 5px; }
+        b.doneCount { 
+          color: green; 
+          font-weight: 400; 
+        }
+        
+        b.topPriorityCount { 
+          color: red; 
+          font-weight: 400; 
+        }
+        
+        .search-bar { 
+          padding-top: 4px; 
+        }
+        
+        .filters a { 
+          margin-right: 5px; 
+        }
+        
         [v-cloak] { display: none; }
 
         .quad {
@@ -80,18 +123,22 @@
 
         .quad-box:nth-child(1) {
           background: #85b4ca;
+          border-radius: var(--border-radius) 0 0 0;
         }
 
         .quad-box:nth-child(2) {
           background: #c9a0a5;
+          border-radius: 0 var(--border-radius) 0 0;
         }
 
         .quad-box:nth-child(3) {
           background: #f1f1d7;
+          border-radius: 0 0 0 var(--border-radius);
         }
 
         .quad-box:nth-child(4) {
           background: #accec0;
+          border-radius: 0 0 var(--border-radius) 0;
         }
       </style>
     </head>
