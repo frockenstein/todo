@@ -7,7 +7,7 @@ const { Todo, TodoList } = require('./todo.js');
 
 const todoStorage = {
 
-  path: '/users/frock/dropbox/todo/',
+  path: '/fu/manchu',
   fileName: 'todo.txt',
   doneFile: 'done.txt',
   backupName: 'todo-backup.txt',
