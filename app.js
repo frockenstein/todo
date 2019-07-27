@@ -1,4 +1,5 @@
 // https://freecontent.manning.com/examining-update-events-with-computed-properties-in-vue-js/
+// https://blog.dcpos.ch/how-to-make-your-electron-app-sexy
 
 const fs = require('fs');
 const path = require('path');
@@ -7,7 +8,7 @@ const { Todo, TodoList } = require('./todo.js');
 
 const todoStorage = {
 
-  path: '/fu/manchu',
+  path: '/users/frock/dropbox/todo',
   fileName: 'todo.txt',
   doneFile: 'done.txt',
   backupName: 'todo-backup.txt',
@@ -35,6 +36,59 @@ const todoStorage = {
     callback();
   }
 };
+
+Vue.component('timer', {
+  template: '#timer',
+  data() {
+    return {
+      defaultTime: '25:00',
+      time: '01:00',
+      noise: false
+    }
+  },
+  created() {
+    this.time = this.defaultTime;
+  },
+  methods: {
+    start(e) {
+      e.preventDefault();
+      this.countdown = parseInt(this.defaultTime) * 60;
+
+      if (!this.audio && this.noise) this.audio = new Audio('brown.wav');
+      if (this.noise) this.audio.play();
+
+      const timer = () => {
+        --this.countdown;
+        const minutes = Math.floor(this.countdown / 60);
+        const seconds = Math.floor(this.countdown % 60);
+        this.time = `${minutes}:${seconds}`;
+        
+        if (this.countdown <= 0) {
+          this.audio.pause();
+          clearInterval(this.interval);
+          alert('donezo');
+        }
+      };
+      timer();
+      if (!this.interval) this.interval = setInterval(timer, 1000);
+    },
+    stop(e) {
+      e.preventDefault();
+      if (this.audio) this.audio.pause();
+      clearInterval(this.interval);
+    },
+    reset(e) {
+      e.preventDefault();
+      clearInterval(this.interval);
+      this.time = this.defaultTime;
+      if (this.audio) this.audio.pause();
+    },
+    brownSound(e) {
+      this.noise = !this.noise;
+      if (!this.noise && this.audio) this.audio.pause();
+    }
+  }
+})
 
 Vue.component('quad', {
   props: ['list', 'hash'],
