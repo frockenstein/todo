@@ -54,7 +54,10 @@ Vue.component('timer', {
       e.preventDefault();
       this.countdown = parseInt(this.defaultTime) * 60;
 
-      if (!this.audio && this.noise) this.audio = new Audio('brown.wav');
+      if (!this.audio && this.noise) {
+        this.audio = new Audio('brown.wav');
+        this.audio.loop = true;
+      }
       if (this.noise) this.audio.play();
 
       const timer = () => {
