@@ -187,6 +187,16 @@
         </div>
       </script>
 
+      <script id="timer" type="text/x-template">
+        <div class="timer-container">
+          Focus: <span>{{time}}</span>
+          <a href="void(0)" @click="start">start</a>
+          <a href="void(0)" @click="stop">stop</a>
+          <a href="void(0)" @click="reset">reset</a>
+          <label><input type="checkbox" :checked="noise" @change="brownSound()" /> brown sound</label>
+        </div>
+      </script>
+
       <div id="list" v-cloak>
         <header>
           <button class="archive" v-on:click="archive">archive</button>
@@ -223,6 +233,7 @@
         </header>
 
         <quad :list="list" :hash="hash"></quad>
+        <timer></timer>
 
         <todo-list :hash="hash" v-bind="$data" @remove-todo="removeTodo"></todo-list>
       </div>
