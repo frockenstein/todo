@@ -282,3 +282,4 @@ window.addEventListener('keyup', (event) => {
 ipcRenderer.on('find', searchFocus);
 ipcRenderer.on('list', () => render('list'));
 ipcRenderer.on('quad', () => render('quad'));
+ipcRenderer.on('focus', () => app.load());

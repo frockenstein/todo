@@ -109,3 +109,5 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.on('browser-window-focus', () => win.webContents.send('focus', ''));
