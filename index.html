@@ -9,6 +9,9 @@
         
         :root {
           --border-radius: 3px;
+          --quad-border-color: 
+          555;
+          --quad-border: 1px solid var(--quad-border-color);
         }
         
         html { 
@@ -17,6 +20,7 @@
           font-size: 95%;
           color: #333;
         }
+
         .project { 
           color: green; 
         }
@@ -69,6 +73,7 @@
           color: #333;
           font-size: 90%;
         }
+
         b.doneCount { 
           color: green; 
           font-weight: 400; 
@@ -89,10 +94,14 @@
         
         [v-cloak] { display: none; }
 
+        .quad-container {
+          margin-bottom: 7px;
+        }
+
         .quad {
-          margin: 20px 0 0 0;
           display: none;
           grid-template-columns: 50% 50%;
+          margin-top: 7px;
         }
 
         .quad.active {
@@ -102,11 +111,16 @@
         .quad-box {
           padding: 10px;
           background: #eee;
+          position: relative;
         }
 
         .quad-box h3 {
           font-weight: 400;
           margin: 0 0 10px 0;
+        }
+
+        .quad-box .description {
+          opacity: .6;
         }
 
         .quad-box li {
@@ -124,21 +138,88 @@
         .quad-box:nth-child(1) {
           background: #85b4ca;
           border-radius: var(--border-radius) 0 0 0;
+          border-right: var(--quad-border);
+          border-bottom: var(--quad-border);
+        }
+        
+        /* https://www.toptal.com/designers/htmlarrows/arrows/ */
+        .quad-box:nth-child(1):after {
+          content: '\27A4';
+          position: absolute;
+          top: -10px;
+          right: -8px;
+          color: var(--quad-border-color);
+          z-index: 9999;
+          transform: rotate(-90deg);
+        }
+
+        .quad-box:nth-child(2):before {
+          content: 'Impact';
+          color: var(--quad-border-color);
+          position: absolute;
+          top: 27px;
+          left: -34px;
+          transform: rotate(-90deg);
         }
 
         .quad-box:nth-child(2) {
           background: #c9a0a5;
           border-radius: 0 var(--border-radius) 0 0;
+          border-bottom: var(--quad-border);
         }
 
+        .quad-box:nth-child(2):after {
+          content: '\27A4';
+          position: absolute;
+          bottom: -10px;
+          right: -8px;
+          color: var(--quad-border-color);
+          z-index: 9999;
+        }
+        
         .quad-box:nth-child(3) {
           background: #f1f1d7;
           border-radius: 0 0 0 var(--border-radius);
+          border-right: var(--quad-border);
+        }
+
+        .quad-box:nth-child(4):before {
+          content: 'Likelihood of success';
+          color: var(--quad-border-color);
+          position: absolute;
+          top: -24px;
+          right: 10px;
         }
 
         .quad-box:nth-child(4) {
           background: #accec0;
           border-radius: 0 0 var(--border-radius) 0;
+        }
+
+        .projects-container, .timer-container, .contexts-container {
+          display: none;
+        }
+
+        .projects-container.active, .timer-container.active, .contexts-container.active {
+          display: block;
+        }
+
+        .projects-container a, .contexts-container a {
+          margin-right: 4px; 
+          word-wrap: break-word;
+        }
+
+        nav {
+          margin-top: 4px;
+          opacity: .5
+        }
+
+        nav:hover, nav.active {
+          opacity: 1;
+        }
+
+        nav a.active {
+          font-weight: 500;
         }
       </style>
     </head>
@@ -174,26 +255,40 @@
 
       <script id="quad" type="text/x-template">
         <div class="quad-container">
-          <a href="#toggle" @click="onToggle">quad</a>
-          <div class="quad" :class="{ active: isActive }">
+          <div class="quad" :class="{ active: activeNav === 'quad' }">
             <div v-for="quad in quads" class="quad-box">
               <h3>{{quad.title}}</h3>
-              <todo-item
-                v-for="todo in byIndex(quad.index)"
-                :key="todo.id"
-                :todo="todo"></todo-item>
+              <span class="description">{{quad.description}}</span>
+              <ul>
+                <todo-item
+                  v-for="todo in byIndex(quad.index)"
+                  :key="todo.id"
+                  :todo="todo"></todo-item>
+              </ul>
             </div>
           </div>
         </div>
       </script>
 
       <script id="timer" type="text/x-template">
-        <div class="timer-container">
+        <div class="timer-container" :class="{ active: activeNav == 'focus' }">
           Focus: <span>{{time}}</span>
           <a href="void(0)" @click="start">start</a>
           <a href="void(0)" @click="stop">stop</a>
           <a href="void(0)" @click="reset">reset</a>
           <label><input type="checkbox" :checked="noise" @change="brownSound()" /> brown sound</label>
+        </div>
+      </script>
+
+      <script id="projects" type="text/x-template">
+        <div class="projects-container" :class="{ active: activeNav === 'projects' }">
+          Projects: <a class="project" v-for="project in projects" :href="'#' + project">{{project}}</a>
+        </div>
+      </script>
+
+      <script id="contexts" type="text/x-template">
+        <div class="contexts-container" :class="{ active: activeNav === 'contexts' }">
+          Contexts: <a class="context" v-for="context in contexts" :href="'#' + context">{{context}}</a>
         </div>
       </script>
 
@@ -232,8 +327,17 @@
           </div>
         </header>
 
-        <quad :list="list" :hash="hash"></quad>
-        <timer></timer>
+        <nav :class="{ active: activeNav !== ''}">
+          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'quad' }">quad</a>
+          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'focus' }">focus</a>
+          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'projects' }">projects</a>
+          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'contexts' }">contexts</a>
+        </nav>
+
+        <quad :active-nav="activeNav" :list="list" :hash="hash"></quad>
+        <timer :active-nav="activeNav"></timer>
+        <projects :active-nav="activeNav" :list="list"></projects>
+        <contexts :active-nav="activeNav" :list="list"></contexts>
 
         <todo-list :hash="hash" v-bind="$data" @remove-todo="removeTodo"></todo-list>
       </div>

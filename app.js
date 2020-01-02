@@ -6,6 +6,8 @@ const path = require('path');
 const { shell, ipcRenderer } = require('electron');
 const { Todo, TodoList } = require('./todo.js');
 
+const log = obj => true && console.log(obj);
+
 const todoStorage = {
 
   path: '/users/frock/dropbox/todo/',
@@ -39,6 +41,7 @@ const todoStorage = {
 
 Vue.component('timer', {
   template: '#timer',
+  props: ['list', 'activeNav'],
   data() {
     return {
       defaultTime: '25:00',
@@ -94,27 +97,42 @@ Vue.component('timer', {
 })
 
 Vue.component('quad', {
-  props: ['list', 'hash'],
+  props: ['list', 'hash', 'activeNav'],
   template: '#quad',
   data() {
     return {
       isActive: false,
       index: 0,
       quads: [
-        { index: 1, title: 'strategery' },
-        { index: 2, title: 'homer' },
-        { index: 3, title: 'todont' },
-        { index: 4, title: 'housekeeping' }
+        { index: 1, title: 'strategery', description: 'Tough important stuff, requiring creative strategic thinking' },
+        { index: 2, title: 'homer', description: 'High yield, more straightforward projects. Outsource this stuff to highest performers as stretch goals' },
+        { index: 3, title: 'todont', description: 'Low value, low likelihood of success. This stuff should get nixed. Maybe it’s a meeting you don’t need to have, or emails that don’t merit a reply, a coffee meeting with someone less relevant to you or the company. When you’re busy, it’s the first to go.' },
+        { index: 4, title: 'housekeeping', description: 'Low value, high likelihood of success. Often best delegated or done at the end of the day.' }
       ]
   }},
   methods: {
     byIndex(index) {
       return this.list.sort(this.list.search(`quad:${index}`));
-    },
-    onToggle(e) {
-      e.preventDefault();
-      this.isActive = !this.isActive;
-      return false;
+    }
+  }
+});
+
+Vue.component('projects', {
+  props: ['list', 'activeNav'],
+  template: '#projects',
+  data() {
+    return {
+      projects: this.list.projects().sort()
+    }
+  }
+});
+
+Vue.component('contexts', {
+  props: ['list', 'activeNav'],
+  template: '#contexts',
+  data() {
+    return {
+      contexts: this.list.contexts().sort()
     }
   }
 });
@@ -151,22 +169,22 @@ Vue.component('todo-item', {
     },
     editTodo(todo) {
       this.editing = todo.id;
-      console.log(['edit', todo]);
+      log(['edit', todo]);
     },
     cancelEdit(todo) {
       this.editing = null;
-      console.log(['cancel', todo]);
+      log(['cancel', todo]);
     },
     doneEdit(todo) {
       this.editing = null;
-      console.log(['done', todo]);
+      log(['done', todo]);
     },
     removeTodo(todo) {
-      console.log(['delete', todo]);
+      log(['delete', todo]);
       this.$emit('remove-todo', todo);
     },
     toggleDone(todo) {
-      console.log(['toggle', todo]);
+      log(['toggle', todo]);
       todo.toggleDone();
     }
   },
@@ -189,6 +207,7 @@ var app = new Vue({
     hash: '',
     newTodo: '',
     list: null,
+    activeNav: ''
   },
 
   created() {
@@ -198,7 +217,7 @@ var app = new Vue({
     // anytime the list changes, write to disk
     this.$watch('list.todos', {
       handler() {
-        console.log('list.todos updated, saving...');
+        log('list.todos updated, saving...');
         if (this.list && this.list.todos.length) {
           todoStorage.write(this.list.todos);
         }
@@ -221,7 +240,6 @@ var app = new Vue({
       const todo = new Todo(this.newTodo);
       this.list.add(todo);
       this.newTodo = '';
-      console.log(['add', todo]);
     },
 
     byPriority(priority) {
@@ -233,12 +251,19 @@ var app = new Vue({
     },
     
     removeTodo(todo) {
-      console.log(['remove event', todo]);
       this.list.remove(todo);
     },
     
     archive() {
       todoStorage.archive(this.list.todos, this.load);
+    },
+
+    toggleNav(e) {
+      e.preventDefault();
+      const target = e.target.innerText;
+      if (this.activeNav === target) this.activeNav = '';
+      else this.activeNav = target;
+      log(this.activeNav);
     }
   },
 

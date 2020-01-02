@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha test/unit.js",
-    "package": "electron-packager . --overwrite"
+    "package": "npm run test && electron-packager . --overwrite"
   },
   "author": "",
   "license": "ISC",
