@@ -30,8 +30,9 @@ function createWindow() {
     {
       label: 'View',
       submenu: [
-        { type: 'normal', label: 'List', accelerator: 'CmdOrCtrl+1', click: () => { win.webContents.send('list', ''); }},
-        { type: 'normal', label: 'Quad', accelerator: 'CmdOrCtrl+2', click: () => { win.webContents.send('quad', ''); }},
+        { type: 'normal', label: 'Quad', accelerator: 'CmdOrCtrl+1', click: () => { win.webContents.send('view', 'quad'); }},
+        { type: 'normal', label: 'Projects', accelerator: 'CmdOrCtrl+2', click: () => { win.webContents.send('view', 'projects'); }},
+        { type: 'normal', label: 'Contexts', accelerator: 'CmdOrCtrl+3', click: () => { win.webContents.send('view', 'contexts'); }},
         { role: 'reload' },
         { role: 'forcereload' },
         { role: 'toggledevtools' },

@@ -9,8 +9,7 @@
         
         :root {
           --border-radius: 3px;
-          --quad-border-color: 
-          555;
+          --quad-border-color: #555;
           --quad-border: 1px solid var(--quad-border-color);
         }
         
@@ -198,16 +197,19 @@
 
         .projects-container, .timer-container, .contexts-container {
           display: none;
+          background-color: #eee;
+          border-radius: var(--border-radius);
+          padding: 5px;
         }
 
         .projects-container.active, .timer-container.active, .contexts-container.active {
           display: block;
         }
 
-        .projects-container a, .contexts-container a {
+        /* .projects-container a, .contexts-container a {
           margin-right: 4px; 
           word-wrap: break-word;
-        }
+        } */
 
         nav {
           margin-top: 4px;
@@ -280,15 +282,12 @@
         </div>
       </script>
 
-      <script id="projects" type="text/x-template">
-        <div class="projects-container" :class="{ active: activeNav === 'projects' }">
-          Projects: <a class="project" v-for="project in projects" :href="'#' + project">{{project}}</a>
-        </div>
-      </script>
-
-      <script id="contexts" type="text/x-template">
-        <div class="contexts-container" :class="{ active: activeNav === 'contexts' }">
-          Contexts: <a class="context" v-for="context in contexts" :href="'#' + context">{{context}}</a>
+      <script id="tags" type="text/x-template">
+        <div :class="[tagType + '-container', { active: activeNav === tagType }]">
+          {{ tagType | capitalize }}: 
+          <template v-for="item in items">
+            <a :class="tagType" :href="'#' + item">{{item}}</a>&nbsp;
+          </template>
         </div>
       </script>
 
@@ -328,16 +327,16 @@
         </header>
 
         <nav :class="{ active: activeNav !== ''}">
-          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'quad' }">quad</a>
+          <a title="Command + 1" href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'quad' }">quad</a>
           <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'focus' }">focus</a>
-          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'projects' }">projects</a>
-          <a href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'contexts' }">contexts</a>
+          <a title="Command + 2" href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'projects' }">projects</a>
+          <a title="Command + 3" href="void(0)" @click="toggleNav" :class="{ active: activeNav === 'contexts' }">contexts</a>
         </nav>
 
         <quad :active-nav="activeNav" :list="list" :hash="hash"></quad>
         <timer :active-nav="activeNav"></timer>
-        <projects :active-nav="activeNav" :list="list"></projects>
-        <contexts :active-nav="activeNav" :list="list"></contexts>
+        <tags tag-type="projects" :active-nav="activeNav" :list="list"></tags>
+        <tags tag-type="contexts" :active-nav="activeNav" :list="list"></tags>
 
         <todo-list :hash="hash" v-bind="$data" @remove-todo="removeTodo"></todo-list>
       </div>

@@ -39,6 +39,7 @@ const todoStorage = {
   }
 };
 
+
 Vue.component('timer', {
   template: '#timer',
   props: ['list', 'activeNav'],
@@ -117,22 +118,12 @@ Vue.component('quad', {
   }
 });
 
-Vue.component('projects', {
-  props: ['list', 'activeNav'],
-  template: '#projects',
+Vue.component('tags', {
+  props: ['list', 'activeNav', 'tagType'],
+  template: '#tags',
   data() {
     return {
-      projects: this.list.projects().sort()
-    }
-  }
-});
-
-Vue.component('contexts', {
-  props: ['list', 'activeNav'],
-  template: '#contexts',
-  data() {
-    return {
-      contexts: this.list.contexts().sort()
+      items: this.list[this.tagType]().sort()
     }
   }
 });
@@ -198,6 +189,11 @@ Vue.component('todo-item', {
   }
 });
 
+Vue.filter('capitalize', value => {
+  if (!value) return '';
+  return value.replace(/\w\S*/g, text => text.charAt(0).toUpperCase() + text.substr(1));
+});
+
 var app = new Vue({
 
   el: '#list',
@@ -207,7 +203,8 @@ var app = new Vue({
     hash: '',
     newTodo: '',
     list: null,
-    activeNav: ''
+    activeNav: '',
+    tagType: ''
   },
 
   created() {
@@ -305,6 +302,8 @@ window.addEventListener('keyup', (event) => {
 });
 
 ipcRenderer.on('find', searchFocus);
-ipcRenderer.on('list', () => render('list'));
-ipcRenderer.on('quad', () => render('quad'));
 ipcRenderer.on('focus', () => app.load());
+ipcRenderer.on('view', (event, message) => {
+  if (app.activeNav === message) app.activeNav = '';
+  else app.activeNav = message;
+});
