@@ -11,11 +11,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^2.0.8",
+    "electron": "^2.0.18",
     "mocha": "^5.2.0",
     "spectron": "^9.0.0"
   },
   "dependencies": {
-    "electron-packager": "^13.0.1"
+    "electron-packager": "^13.1.1"
   }
 }
