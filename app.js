@@ -11,12 +11,14 @@ const log = obj => true && console.log(obj);
 const todoStorage = {
 
   path: '/users/frock/dropbox/todo/',
-  fileName: 'todo.txt',
-  doneFile: 'done.txt',
-  backupName: 'todo-backup.txt',
+  fileName: 'todo-work.txt',
+  doneFile: 'done-work.txt',
+  backupName: 'todo-work-backup.txt',
 
   load() {
-    return fs.readFileSync(path.join(this.path, this.fileName))
+    const file = path.join(this.path, this.fileName);
+    if (!fs.existsSync(file)) fs.writeFileSync(file);
+    return fs.readFileSync(file)
       .toString()
       .split('\n')
       .filter(line => line);
