@@ -8,15 +8,19 @@ const { Todo, TodoList } = require('./todo.js');
 
 const log = obj => true && console.log(obj);
 
+let workMode = false;
+
 const todoStorage = {
 
   path: '/users/frock/dropbox/todo/',
-  fileName: 'todo-work.txt',
-  doneFile: 'done-work.txt',
-  backupName: 'todo-work-backup.txt',
+
+  _fileName(type) {
+    let modifier = workMode ? '-work' : '';
+    return `${type}${modifier}.txt`
+  },
 
   load() {
-    const file = path.join(this.path, this.fileName);
+    const file = path.join(this.path, this._fileName('todo'));
     if (!fs.existsSync(file)) fs.writeFileSync(file);
     return fs.readFileSync(file)
       .toString()
@@ -27,15 +31,15 @@ const todoStorage = {
   write(todos) {
     if (!todos) throw 'No todos to write!';
     const data = todos.reduce((accumulator, todo) => accumulator + todo.text + '\n', '').trimRight('\n');
-    const backup = path.join(this.path, this.backupName);
-    const file = path.join(this.path, this.fileName);
+    const backup = path.join(this.path, this._fileName('backup'));
+    const file = path.join(this.path, this._fileName('todo'));
     fs.copyFileSync(file, backup);
     fs.writeFileSync(file, data);
   },
 
   archive(todos, callback) {
     const data = todos.filter(x => x.isDone).reduce((accumulator, todo) => accumulator + todo.text + '\n', '').trimRight('\n');
-    fs.appendFileSync(path.join(this.path, this.doneFile), data);
+    fs.appendFileSync(path.join(this.path, this._fileName('done')), data);
     this.write(todos.filter(x => x.isDone === false));
     callback();
   }
@@ -201,7 +205,7 @@ var app = new Vue({
   el: '#list',
 
   data: {
-    filters: ['A', 'B', '@work', '@inbox', '+moto'],
+    filters: workMode ? ['A', 'B'] : ['A', 'B', '@inbox', '+moto'],
     hash: '',
     newTodo: '',
     list: null,
@@ -263,6 +267,12 @@ var app = new Vue({
       if (this.activeNav === target) this.activeNav = '';
       else this.activeNav = target;
       log(this.activeNav);
+    },
+
+    toggleMode(e) {
+      e.preventDefault();
+      workMode = !workMode;
+      this.load();
     }
   },
 

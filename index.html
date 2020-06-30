@@ -62,6 +62,17 @@
         input.add, input.edit { 
           width: 80%; 
         }
+
+        button.mode { 
+          float: right; 
+          padding: 4px 14px;
+          margin-right: 4px;
+          border-radius: var(--border-radius);
+          border: 1px solid #ccc;
+          background-color: #ccc;
+          color: #333;
+          font-size: 90%;
+        }
         
         button.archive { 
           float: right; 
@@ -289,6 +300,7 @@
       <div id="list" v-cloak>
         <header>
           <button class="archive" v-on:click="archive">archive</button>
+          <button class="mode" v-on:click="toggleMode">depeche mode</button>
           <input
             class="add"
             type="text"
