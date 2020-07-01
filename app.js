@@ -31,9 +31,7 @@ const todoStorage = {
   write(todos) {
     if (!todos) throw 'No todos to write!';
     const data = todos.reduce((accumulator, todo) => accumulator + todo.text + '\n', '').trimRight('\n');
-    const backup = path.join(this.path, this._fileName('backup'));
     const file = path.join(this.path, this._fileName('todo'));
-    fs.copyFileSync(file, backup);
     fs.writeFileSync(file, data);
   },
 
