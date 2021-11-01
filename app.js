@@ -203,7 +203,6 @@ var app = new Vue({
   el: '#list',
 
   data: {
-    filters: workMode ? ['A', 'B'] : ['A', 'B', '@inbox', '+moto'],
     hash: '',
     newTodo: '',
     list: null,
@@ -282,6 +281,10 @@ var app = new Vue({
     
     topPriorityCount() {
       return this.list.todos.filter(x => x.text.startsWith('(A)')).length;
+    },
+
+    filters() {
+      return workMode ? ['A', 'B'] : ['A', 'B', '@inbox', '+moto'];
     }
   }
 });
