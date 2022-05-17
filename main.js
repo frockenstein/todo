@@ -3,7 +3,13 @@ const { app, BrowserWindow, Menu, MenuItem, globalShortcut } = require('electron
 let win;
 
 function createWindow() {
-  win = new BrowserWindow({ show: false });
+  win = new BrowserWindow({ 
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
   win.maximize();
   win.show();
   win.loadFile('index.html');

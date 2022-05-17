@@ -12,11 +12,11 @@ let workMode = false;
 
 const todoStorage = {
 
-  path: '/users/frock/dropbox/todo/',
+  path: '/users/frock/notesy/',
 
   _fileName(type) {
-    let modifier = workMode ? '-work' : '';
-    return `${type}${modifier}.txt`
+    const folder = workMode ? 'work/' : '';
+    return `${folder}${type}.txt`
   },
 
   load() {
