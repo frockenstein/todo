@@ -12,10 +12,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^18.2.3",
+    "electron-packager": "^15.5.1",
     "mocha": "^10.0.0",
     "spectron": "^19.0.0"
-  },
-  "dependencies": {
-    "electron-packager": "^13.1.1"
   }
 }
